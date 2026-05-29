@@ -28,7 +28,7 @@
       min-height: 100vh;
     }
 
-    /* ── 상단 네비 ── */
+    /* ── 네비 ── */
     .topbar {
       width: 100%;
       background: var(--text-dark);
@@ -46,9 +46,10 @@
       display: flex;
       align-items: center;
       gap: 14px;
+      cursor: pointer;
+      text-decoration: none;
     }
 
-    /* 프로필 사진 – 네비 안에 작게 */
     .nav-avatar {
       width: 38px;
       height: 38px;
@@ -56,7 +57,6 @@
       object-fit: cover;
       border: 2px solid var(--gold);
       flex-shrink: 0;
-      display: block;
     }
 
     .logo-text {
@@ -79,24 +79,39 @@
       font-weight: 500;
       letter-spacing: 0.06em;
       transition: color 0.2s;
+      padding-bottom: 4px;
+      border-bottom: 2px solid transparent;
     }
 
     .menu a:hover { color: var(--gold-light); }
+
+    .menu a.active {
+      color: var(--gold-light);
+      border-bottom-color: var(--gold);
+    }
+
+    /* ── 페이지 전환 ── */
+    .page {
+      display: none !important;
+    }
+    .page.active {
+      display: block !important;
+    }
+    .hero.page.active {
+      display: flex !important;
+    }
 
     /* ── 히어로 ── */
     .hero {
       max-width: 1200px;
       margin: 60px auto 0;
       padding: 0 40px 50px;
-      display: flex;
       align-items: center;
       gap: 60px;
       border-bottom: 1px solid #ddd5b0;
     }
 
-    .hero-left {
-      flex: 1;
-    }
+    .hero-left { flex: 1; }
 
     .hero-tag {
       font-size: 11px;
@@ -116,9 +131,7 @@
       font-weight: 800;
     }
 
-    .hero-title span {
-      color: var(--gold-dark);
-    }
+    .hero-title span { color: var(--gold-dark); }
 
     .hero-desc {
       font-size: 15px;
@@ -127,7 +140,6 @@
       max-width: 420px;
     }
 
-    /* 프로필 사진 – 히어로 오른쪽에 작게 */
     .hero-right {
       display: flex;
       flex-direction: column;
@@ -152,8 +164,8 @@
       text-align: center;
     }
 
-    /* ── 대시보드 카드 ── */
-    .main {
+    /* ── 섹션 공통 ── */
+    .section-wrap {
       max-width: 1200px;
       margin: 0 auto;
       padding: 50px 40px 80px;
@@ -165,9 +177,19 @@
       color: var(--gold-dark);
       text-transform: uppercase;
       font-weight: 700;
-      margin-bottom: 24px;
+      margin-bottom: 8px;
     }
 
+    .section-title {
+      font-family: 'Nanum Myeongjo', serif;
+      font-size: 32px;
+      color: var(--text-dark);
+      margin-bottom: 32px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #ddd5b0;
+    }
+
+    /* ── 카드 ── */
     .dashboard {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -252,6 +274,53 @@
       color: white;
     }
 
+    /* ── 상세 섹션 콘텐츠 ── */
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+      margin-top: 10px;
+    }
+
+    .info-card {
+      background: var(--card-bg);
+      border-radius: 18px;
+      padding: 28px;
+      box-shadow: var(--shadow);
+      border: 1px solid #ede5c8;
+    }
+
+    .info-card h3 {
+      font-family: 'Nanum Myeongjo', serif;
+      font-size: 20px;
+      color: var(--text-dark);
+      margin-bottom: 14px;
+    }
+
+    .info-card p {
+      font-size: 14px;
+      color: var(--text-light);
+      line-height: 1.9;
+    }
+
+    .stat-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .stat-num {
+      font-family: 'Nanum Myeongjo', serif;
+      font-size: 36px;
+      color: var(--gold-dark);
+    }
+
+    .stat-unit {
+      font-size: 14px;
+      color: var(--text-light);
+    }
+
     footer {
       text-align: center;
       padding: 28px;
@@ -261,12 +330,13 @@
     }
 
     @media (max-width: 768px) {
-      .topbar { padding: 14px 24px; }
-      .menu { gap: 18px; }
-      .hero { flex-direction: column; gap: 30px; padding: 0 24px 40px; }
+      .topbar { padding: 14px 24px; flex-direction: column; gap: 14px; }
+      .menu { gap: 16px; flex-wrap: wrap; justify-content: center; }
+      .hero { flex-direction: column; gap: 30px; padding: 30px 24px 40px; margin-top: 20px; }
       .hero-right { flex-direction: row; }
       .hero-title { font-size: 30px; }
-      .main { padding: 36px 24px 60px; }
+      .section-wrap { padding: 36px 24px 60px; }
+      .info-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -274,20 +344,21 @@
 
   <!-- 네비게이션 -->
   <div class="topbar">
-    <div class="logo-wrap">
+    <a class="logo-wrap" href="#home" onclick="showPage('home');return false;">
       <img src="data:image/jpeg;base64,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" class="nav-avatar" alt="프로필">
       <span class="logo-text">부경대 사회복지학 실무역량 짱</span>
-    </div>
+    </a>
     <div class="menu">
-      <a href="#">날씨</a>
-      <a href="#">부산 이슈</a>
-      <a href="#">부경대 뉴스</a>
-      <a href="#">사회복지 통계</a>
+      <a href="#weather"  onclick="showPage('weather');return false;">날씨</a>
+      <a href="#busan"    onclick="showPage('busan');return false;">부산 이슈</a>
+      <a href="#pknu"     onclick="showPage('pknu');return false;">부경대 뉴스</a>
+      <a href="#stats"    onclick="showPage('stats');return false;">사회복지 통계</a>
+      <a href="#pet"      onclick="showPage('pet');return false;">반려동물 통계</a>
     </div>
   </div>
 
-  <!-- 히어로 -->
-  <div class="hero">
+  <!-- ① 홈 (히어로) -->
+  <div id="page-home" class="hero page active">
     <div class="hero-left">
       <div class="hero-tag">Pukyong National University · Social Welfare</div>
       <h1 class="hero-title">부경대 사회복지학<br><span>실무역량 짱</span></h1>
@@ -303,48 +374,452 @@
     </div>
   </div>
 
-  <!-- 카드 대시보드 -->
-  <div class="main">
-    <div class="section-label">Dashboard Overview</div>
-    <div class="dashboard">
+  <!-- ② 날씨 -->
+  <div id="page-weather" class="page">
+    <div class="section-wrap">
+      <div class="section-label">Weather</div>
+      <h2 class="section-title">☀️ 부산 날씨</h2>
+      <div class="info-grid">
+        <div class="info-card">
+          <div class="stat-row"><span class="stat-num">26°C</span><span class="stat-unit">현재 기온</span></div>
+          <h3>오늘의 날씨</h3>
+          <p>부산은 현재 맑고 화창한 날씨입니다.<br>낮 최고 기온은 26°C, 밤에는 18°C까지 내려갈 예정입니다.</p>
+        </div>
+        <div class="info-card">
+          <div class="stat-row"><span class="stat-num">65%</span><span class="stat-unit">습도</span></div>
+          <h3>습도 &amp; 체감</h3>
+          <p>체감 온도는 약 28°C 수준입니다.<br>오후에는 약한 바람이 불어 쾌적한 날씨가 예상됩니다.</p>
+        </div>
+        <div class="info-card">
+          <h3>주간 예보</h3>
+          <p>월 ☀️ 26° &nbsp; 화 ⛅ 24° &nbsp; 수 🌧️ 21°<br>목 🌧️ 20° &nbsp; 금 ⛅ 23° &nbsp; 토 ☀️ 27°</p>
+        </div>
+        <div class="info-card">
+          <h3>생활 지수</h3>
+          <p>자외선 지수: 높음 ☀️<br>미세먼지: 보통 😊<br>초미세먼지: 좋음 🍃</p>
+        </div>
+      </div>
+    </div>
+  </div>
 
-      <div class="card">
-        <div class="card-icon">☀️</div>
-        <div class="card-label">Weather</div>
-        <h2>부산 날씨</h2>
-        <div class="big">26°C</div>
-        <p>부산은 현재 맑고 화창한 날씨입니다.</p>
+  <!-- ③ 부산 이슈 -->
+  <div id="page-busan" class="page">
+    <div class="section-wrap">
+      <div class="section-label">Local Issue</div>
+      <h2 class="section-title">📰 부산 HOT 이슈</h2>
+      <div class="info-grid">
+        <div class="info-card">
+          <h3>청년 일자리 정책 확대</h3>
+          <p>부산시는 2026년 청년 일자리 사업 예산을 전년 대비 15% 확대하여 청년 취업 지원을 강화하고 있습니다. 사회복지·공공부문 채용도 포함되어 있습니다.</p>
+        </div>
+        <div class="info-card">
+          <h3>관광 활성화 정책</h3>
+          <p>해운대·광안리 등 주요 관광지의 외국인 관광객 유치를 위한 특별 프로그램이 운영 중입니다. 지역 경제 활성화와 일자리 창출이 기대됩니다.</p>
+        </div>
+        <div class="info-card">
+          <h3>사회복지 인프라 확충</h3>
+          <p>부산시는 노인·장애인 복지관 확충 계획을 발표했습니다. 2027년까지 구·군별 1개소 이상 신설을 목표로 하고 있습니다.</p>
+        </div>
+        <div class="info-card">
+          <h3>청년 주거 지원</h3>
+          <p>청년 임차보증금 지원 및 행복주택 공급 확대 정책이 시행 중입니다. 복지 사각지대 해소를 위한 통합 지원 체계도 구축 예정입니다.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ④ 부경대 뉴스 -->
+  <div id="page-pknu" class="page">
+    <div class="section-wrap">
+      <div class="section-label">University News</div>
+      <h2 class="section-title">🎓 부경대 뉴스</h2>
+      <div class="info-grid">
+        <div class="info-card">
+          <h3>최신 공지사항</h3>
+          <p>2026학년도 1학기 성적 확인 및 이의신청 일정이 안내되었습니다. 학사 포털에서 확인하세요.</p>
+          <a href="https://www.pknu.ac.kr/main" target="_blank" class="btn">공식 홈페이지 →</a>
+        </div>
+        <div class="info-card">
+          <h3>사회복지학과 소식</h3>
+          <p>사회복지학과 현장실습 연계 기관이 확대되었습니다. 부산 내 30여 개 기관과 협약을 통해 실무 역량 강화 프로그램이 운영됩니다.</p>
+        </div>
+        <div class="info-card">
+          <h3>장학금 안내</h3>
+          <p>2026년 2학기 국가장학금 1차 신청이 시작되었습니다. 한국장학재단 홈페이지에서 신청 가능합니다.</p>
+        </div>
+        <div class="info-card">
+          <h3>취업 지원</h3>
+          <p>부경대 취업지원센터에서 사회복지 분야 취업 특강 및 면접 클리닉을 운영합니다. 일정은 포털에서 확인하세요.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑤ 사회복지 통계 -->
+  <div id="page-stats" class="page">
+    <div class="section-wrap">
+      <div class="section-label">Statistics</div>
+      <h2 class="section-title">📊 사회복지 통계</h2>
+      <div class="info-grid">
+        <div class="info-card">
+          <div class="stat-row"><span class="stat-num">78%</span><span class="stat-unit">이용률</span></div>
+          <h3>노인 복지 서비스</h3>
+          <p>노인 복지 서비스 이용률이 꾸준히 증가하고 있습니다. 2025년 기준 전국 평균 대비 부산은 78%로 집계되었습니다.</p>
+        </div>
+        <div class="info-card">
+          <div class="stat-row"><span class="stat-num">42만</span><span class="stat-unit">명</span></div>
+          <h3>부산 복지 수혜 인원</h3>
+          <p>부산시 사회복지 서비스 수혜 인원은 약 42만 명으로 전년 대비 3.2% 증가하였습니다.</p>
+        </div>
+        <div class="info-card">
+          <div class="stat-row"><span class="stat-num">1.2만</span><span class="stat-unit">개소</span></div>
+          <h3>복지 시설 현황</h3>
+          <p>부산 내 사회복지 시설은 총 12,000여 개소로, 노인·장애인·아동 분야 시설이 꾸준히 확충되고 있습니다.</p>
+        </div>
+        <div class="info-card">
+          <div class="stat-row"><span class="stat-num">94%</span><span class="stat-unit">취업률</span></div>
+          <h3>사회복지사 취업률</h3>
+          <p>사회복지사 자격증 취득자의 취업률은 94%로 높은 수준을 유지하고 있습니다. 공공·민간 수요 모두 증가 추세입니다.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑥ 반려동물 통계 (신규) -->
+  <div id="page-pet" class="page">
+    <div class="section-wrap">
+      <div class="section-label">Pet Statistics · 출처: 2025 한국 반려동물 보고서 (KB금융지주 경영연구소)</div>
+      <h2 class="section-title">🐾 한국 반려동물 현황 통계</h2>
+
+      <!-- KPI 카드 4개 -->
+      <div class="pet-kpi-grid">
+        <div class="pet-kpi">
+          <div class="pet-kpi-num">591만</div>
+          <div class="pet-kpi-label">반려가구 수 (2024년 말)</div>
+          <div class="pet-kpi-sub">전체 가구의 26.7%</div>
+        </div>
+        <div class="pet-kpi">
+          <div class="pet-kpi-num">1,546만</div>
+          <div class="pet-kpi-label">반려인 수 (2024년 말)</div>
+          <div class="pet-kpi-sub">총인구의 29.9%</div>
+        </div>
+        <div class="pet-kpi">
+          <div class="pet-kpi-num">546만</div>
+          <div class="pet-kpi-label">반려견 수 (2024년 말)</div>
+          <div class="pet-kpi-sub">전년 대비 10만 마리 감소</div>
+        </div>
+        <div class="pet-kpi">
+          <div class="pet-kpi-num">217만</div>
+          <div class="pet-kpi-label">반려묘 수 (2024년 말)</div>
+          <div class="pet-kpi-sub">전년 대비 18만 마리 증가</div>
+        </div>
       </div>
 
-      <div class="card">
-        <div class="card-icon">📰</div>
-        <div class="card-label">Local Issue</div>
-        <h2>부산 HOT 이슈</h2>
-        <div class="big">HOT</div>
-        <p>청년 일자리 및 관광 활성화 정책이 확대되고 있습니다.</p>
+      <!-- 그래프 영역 -->
+      <div class="chart-section">
+        <!-- 반려가구 수 추이 -->
+        <div class="chart-card">
+          <div class="chart-title">반려가구 수 추이 (만 가구)</div>
+          <div class="chart-wrap">
+            <canvas id="chartHousehold"></canvas>
+          </div>
+        </div>
+
+        <!-- 반려동물 수 추이 -->
+        <div class="chart-card">
+          <div class="chart-title">반려견·반려묘 수 추이 (만 마리)</div>
+          <div class="chart-wrap">
+            <canvas id="chartPets"></canvas>
+          </div>
+        </div>
+
+        <!-- 반려인 수 추이 -->
+        <div class="chart-card">
+          <div class="chart-title">반려인 수 추이 (만 명)</div>
+          <div class="chart-wrap">
+            <canvas id="chartOwners"></canvas>
+          </div>
+        </div>
+
+        <!-- 향후 양육 계획 -->
+        <div class="chart-card">
+          <div class="chart-title">향후 반려동물 양육 계획 (비반려가구 응답)</div>
+          <div class="chart-wrap">
+            <canvas id="chartFuture"></canvas>
+          </div>
+        </div>
       </div>
 
-      <div class="card">
-        <div class="card-icon">🎓</div>
-        <div class="card-label">University</div>
-        <h2>부경대 뉴스</h2>
-        <div class="big">NEW</div>
-        <p>부경대학교 최신 공지사항과 대학 소식을 확인할 수 있습니다.</p>
-        <a href="https://www.pknu.ac.kr/main" target="_blank" class="btn">공식 홈페이지 →</a>
+      <!-- 주요 이슈 카드 -->
+      <div class="section-label" style="margin-top:40px;">Key Findings</div>
+      <div class="info-grid" style="margin-top:10px;">
+        <div class="info-card">
+          <h3>🐱 반려묘 증가 트렌드</h3>
+          <p>반려묘 수는 2024년 말 217만 마리로 전년 대비 9.2% 증가. 코로나19 이후 실내생활 선호와 맞물려 반려묘 양육이 빠르게 늘고 있습니다.</p>
+        </div>
+        <div class="info-card">
+          <h3>💊 반려동물 건강 관심 1위</h3>
+          <p>반려가구의 55.2%가 최대 관심사로 '건강관리'를 꼽았습니다. '건강검진과 같은 건강관리 방법'(59.1%) 및 '질병 진단 후 케어 방법'(56.2%)에 대한 관심이 높았습니다.</p>
+        </div>
+        <div class="info-card">
+          <h3>🏠 반려동물은 가족</h3>
+          <p>반려가구의 87.2%, 비반려가구의 68.2%가 '반려동물은 가족의 일원이다'에 동의. 사회 전반의 반려동물 인식이 크게 변화하고 있습니다.</p>
+        </div>
+        <div class="info-card">
+          <h3>⚖️ 비만 관리 주목</h3>
+          <p>한국 반려동물 중 수의사의 '비만 판정'을 받은 동물은 전체의 14.7%. 비만 반려동물을 기르는 가구는 월 평균 28만 3천 원의 양육비를 지출하고 있습니다.</p>
+        </div>
       </div>
-
-      <div class="card">
-        <div class="card-icon">📊</div>
-        <div class="card-label">Statistics</div>
-        <h2>사회복지 통계</h2>
-        <div class="big">78%</div>
-        <p>노인 복지 서비스 이용률이 꾸준히 증가하고 있습니다.</p>
-      </div>
-
     </div>
   </div>
 
   <footer>ⓒ 2026 부경대 사회복지학 실무역량 짱</footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <style>
+    /* ── 반려동물 통계 ── */
+    .pet-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .pet-kpi {
+      background: var(--text-dark);
+      border-radius: 18px;
+      padding: 24px 20px;
+      text-align: center;
+    }
+    .pet-kpi-num {
+      font-family: 'Nanum Myeongjo', serif;
+      font-size: 34px;
+      color: var(--gold-light);
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .pet-kpi-label {
+      font-size: 13px;
+      color: #ccc5a8;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+    .pet-kpi-sub {
+      font-size: 11px;
+      color: var(--gold);
+      letter-spacing: 0.04em;
+    }
+    .chart-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+      margin-bottom: 16px;
+    }
+    .chart-card {
+      background: var(--card-bg);
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      border: 1px solid #ede5c8;
+    }
+    .chart-title {
+      font-family: 'Nanum Myeongjo', serif;
+      font-size: 16px;
+      color: var(--text-dark);
+      margin-bottom: 18px;
+      font-weight: 700;
+    }
+    .chart-wrap {
+      position: relative;
+      height: 220px;
+    }
+    @media (max-width: 768px) {
+      .chart-section { grid-template-columns: 1fr; }
+    }
+  </style>
+
+  <script>
+    // 페이지 ID 맵 (hash → page id)
+    var PAGE_MAP = {
+      'home'   : 'page-home',
+      'weather': 'page-weather',
+      'busan'  : 'page-busan',
+      'pknu'   : 'page-pknu',
+      'stats'  : 'page-stats',
+      'pet'    : 'page-pet'
+    };
+
+    // 메뉴 링크 맵 (hash → menu href)
+    var MENU_HREFS = {
+      'weather': '#weather',
+      'busan'  : '#busan',
+      'pknu'   : '#pknu',
+      'stats'  : '#stats'
+    };
+
+    function showPage(key) {
+      // 모든 페이지 숨기기
+      var pages = document.querySelectorAll('.page');
+      for (var i = 0; i < pages.length; i++) {
+        pages[i].classList.remove('active');
+      }
+
+      // 해당 페이지 보이기
+      var targetId = PAGE_MAP[key] || 'page-home';
+      var target = document.getElementById(targetId);
+      if (target) target.classList.add('active');
+
+      // 메뉴 active 처리
+      var links = document.querySelectorAll('.menu a');
+      for (var j = 0; j < links.length; j++) {
+        links[j].classList.remove('active');
+        if (links[j].getAttribute('href') === '#' + key) {
+          links[j].classList.add('active');
+        }
+      }
+
+      // URL 해시 업데이트 (GitHub Pages 호환)
+      if (key !== 'home') {
+        history.replaceState(null, '', '#' + key);
+      } else {
+        history.replaceState(null, '', window.location.pathname);
+      }
+
+      window.scrollTo(0, 0);
+    }
+
+    // 페이지 로드 시 해시 읽기
+    (function () {
+      var hash = window.location.hash.replace('#', '');
+      if (hash && PAGE_MAP[hash]) {
+        showPage(hash);
+      } else {
+        showPage('home');
+      }
+    })();
+
+    // 브라우저 뒤로가기 지원
+    window.addEventListener('popstate', function () {
+      var hash = window.location.hash.replace('#', '');
+      showPage(hash && PAGE_MAP[hash] ? hash : 'home');
+    });
+
+    // ── 차트 초기화 ──
+    var chartsInit = false;
+    function initCharts() {
+      if (chartsInit) return;
+      chartsInit = true;
+
+      var gold = '#b5a46a';
+      var goldDark = '#8a7a4a';
+      var teal = '#5a9e8f';
+      var dark = '#3a3320';
+      var cream = '#f7f3ea';
+
+      var baseOpts = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { labels: { color: dark, font: { size: 12 } } } },
+        scales: {
+          x: { ticks: { color: '#9a9070', font: { size: 11 } }, grid: { color: '#ede5c8' } },
+          y: { ticks: { color: '#9a9070', font: { size: 11 } }, grid: { color: '#ede5c8' } }
+        }
+      };
+
+      // 반려가구 수 추이
+      new Chart(document.getElementById('chartHousehold'), {
+        type: 'bar',
+        data: {
+          labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
+          datasets: [{
+            label: '반려가구 수 (만 가구)',
+            data: [531, 555, 561, 571, 585, 591],
+            backgroundColor: [gold, gold, gold, gold, gold, goldDark],
+            borderRadius: 6
+          }]
+        },
+        options: JSON.parse(JSON.stringify(baseOpts))
+      });
+
+      // 반려동물 수 추이
+      new Chart(document.getElementById('chartPets'), {
+        type: 'line',
+        data: {
+          labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
+          datasets: [
+            {
+              label: '반려견 (만 마리)',
+              data: [512, 512, 517, 542, 556, 546],
+              borderColor: goldDark,
+              backgroundColor: 'rgba(138,122,74,0.1)',
+              tension: 0.4,
+              pointBackgroundColor: goldDark,
+              fill: true
+            },
+            {
+              label: '반려묘 (만 마리)',
+              data: [179, 177, 179, 194, 199, 217],
+              borderColor: teal,
+              backgroundColor: 'rgba(90,158,143,0.1)',
+              tension: 0.4,
+              pointBackgroundColor: teal,
+              fill: true
+            }
+          ]
+        },
+        options: JSON.parse(JSON.stringify(baseOpts))
+      });
+
+      // 반려인 수 추이
+      new Chart(document.getElementById('chartOwners'), {
+        type: 'bar',
+        data: {
+          labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
+          datasets: [{
+            label: '반려인 수 (만 명)',
+            data: [1477, 1523, 1514, 1520, 1541, 1546],
+            backgroundColor: [teal, teal, teal, teal, teal, '#3a8a7a'],
+            borderRadius: 6
+          }]
+        },
+        options: JSON.parse(JSON.stringify(baseOpts))
+      });
+
+      // 향후 양육 계획 (도넛)
+      new Chart(document.getElementById('chartFuture'), {
+        type: 'doughnut',
+        data: {
+          labels: ['양육 계획 있음', '계획 없음', '잘 모르겠음'],
+          datasets: [{
+            data: [37.6, 35.6, 26.9],
+            backgroundColor: [goldDark, '#d0c8a8', '#bab3a0'],
+            borderWidth: 0,
+            hoverOffset: 8
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '60%',
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: { color: dark, font: { size: 12 }, padding: 16 }
+            }
+          }
+        }
+      });
+    }
+
+    // pet 페이지 진입 시 차트 초기화
+    var _origShowPage = showPage;
+    showPage = function(key) {
+      _origShowPage(key);
+      if (key === 'pet') {
+        setTimeout(initCharts, 50);
+      }
+    };
+  </script>
 
 </body>
 </html>
